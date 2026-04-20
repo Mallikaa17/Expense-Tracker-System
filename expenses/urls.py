@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from drf_spectacular.utils import extend_schema
 from apps.accounts.views import RegisterView
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view

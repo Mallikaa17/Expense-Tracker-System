@@ -10,6 +10,8 @@ from drf_yasg import openapi
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.routers import DefaultRouter
+from apps.accounts.analytics_views import AnalyticsViewSet
 from .serializers import LoginSerializer
 from .serializers import RegisterSerializer
 from rest_framework import serializers
@@ -85,120 +87,6 @@ class UpdateProfileView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# class AddExpenseView(APIView):
-#     permission_classes = [IsAuthenticated]
-#     parser_classes = [JSONParser]
-
-#     @swagger_auto_schema(request_body=ExpenseSerializer)
-
-#     def post(self, request):
-#         serializer = ExpenseSerializer(data=request.data)
-
-#         if serializer.is_valid():
-#             serializer.save(user=request.user)
-#             return Response({
-#                 "message": "Expense added successfully",
-#                 "data": serializer.data
-#             }, status=status.HTTP_201_CREATED)
-
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-# class ListExpenseView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         expenses = Expense.objects.filter(user=request.user).order_by('-date')
-#         serializer = ExpenseSerializer(expenses, many=True)
-
-#         return Response(serializer.data)
-    
-# class UpdateExpenseView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def patch(self, request, pk):
-#         try:
-#             expense = Expense.objects.get(id=pk, user=request.user)
-#         except Expense.DoesNotExist:
-#             return Response({"error": "Not found"}, status=404)
-
-#         serializer = ExpenseSerializer(expense, data=request.data, partial=True)
-
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response({
-#                 "message": "Expense updated",
-#                 "data": serializer.data
-#             })
-
-#         return Response(serializer.errors, status=400)
-    
-# class DeleteExpenseView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def delete(self, request, pk):
-#         try:
-#             expense = Expense.objects.get(id=pk, user=request.user)
-#         except Expense.DoesNotExist:
-#             return Response({"error": "Not found"}, status=404)
-
-#         expense.delete()
-#         return Response({"message": "Deleted successfully"})
-    
-# class FilterExpenseView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     @swagger_auto_schema(
-#         manual_parameters=[
-#             openapi.Parameter(
-#                 'category',
-#                 openapi.IN_QUERY,
-#                 description="Filter by category",
-#                 type=openapi.TYPE_STRING
-#             ),
-#             openapi.Parameter(
-#                 'start_date',
-#                 openapi.IN_QUERY,
-#                 description="Start date (YYYY-MM-DD)",
-#                 type=openapi.TYPE_STRING
-#             ),
-#             openapi.Parameter(
-#                 'end_date',
-#                 openapi.IN_QUERY,
-#                 description="End date (YYYY-MM-DD)",
-#                 type=openapi.TYPE_STRING
-#             ),
-#         ]
-#     )
-#     def get(self, request):
-#         expenses = Expense.objects.filter(user=request.user)
-
-#         category = request.query_params.get('category')
-#         start_date = request.query_params.get('start_date')
-#         end_date = request.query_params.get('end_date')
-
-#         if category:
-#             expenses = expenses.filter(category=category)
-
-#         if start_date and end_date:
-#             expenses = expenses.filter(date__range=[start_date, end_date])
-
-#         serializer = ExpenseSerializer(expenses, many=True)
-#         return Response(serializer.data)
-    
-# class ExpenseSummaryView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         expenses = Expense.objects.filter(user=request.user)
-
-#         total = expenses.aggregate(total=Sum('amount'))['total'] or 0
-
-#         category_data = expenses.values('category').annotate(total=Sum('amount'))
-
-#         return Response({
-#             "total_expense": total,
-#             "category_wise": category_data
-#         })
 
 # ✅ FILTER SERIALIZER (for Swagger query params)
 class ExpenseFilterSerializer(serializers.Serializer):
@@ -256,3 +144,7 @@ class ExpenseViewSet(ModelViewSet):
             "total_expense": total,
             "category_wise": category_data
         })
+    
+router = DefaultRouter()
+router.register('analytics', AnalyticsViewSet, basename='analytics')
+urlpatterns = router.urls

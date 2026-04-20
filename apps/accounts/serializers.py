@@ -1,9 +1,5 @@
-
-
 from rest_framework import serializers
 from django.contrib.auth.models import User
-
-
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -49,3 +45,7 @@ class CategorySummarySerializer(serializers.Serializer):
 class ExpenseSummarySerializer(serializers.Serializer):
     total_expense = serializers.FloatField()
     category_wise = CategorySummarySerializer(many=True)
+
+class AnalyticsQuerySerializer(serializers.Serializer):
+    month = serializers.IntegerField(required=False)
+    year = serializers.IntegerField(required=False)
