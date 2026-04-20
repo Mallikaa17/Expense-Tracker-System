@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="loadExpenses()">
+
+<div class="dashboard">
+
+  <div class="header">
+    <h2>Expense Tracker</h2>
+    <div>
+      <a href="add-expense.html">+ Add</a> |
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Your Expenses</h3>
+    <div id="list"></div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
